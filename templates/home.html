@@ -1,0 +1,19 @@
+{% block content %}
+
+<h1>HW: Python Finance Info - Individual Homework</h1>
+Course: Software Engineering Processes - CMPE 285. Fall, 2019. Professor Richard Sinn.<br>
+Student Name: Jacky Zhihong Chen<br>
+SJSU ID: 009941451<br>
+
+<form action="fetch_stock">
+	<h3>Input:</h3>
+   	Please enter a symbol: <input type="text" name="tickerSymbol" placeholder="ADBE" required>
+    <input type="submit">
+</form>
+
+<h3>Output:</h3>
+<p>{{stock_date}}</p>
+<p>{{stock_name}}</p>
+<p>{{closingStockPriceToday}} {{valuesChange}} {{percentageChange}}</p>
+
+{% endblock %}
