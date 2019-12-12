@@ -14,6 +14,39 @@ def get_symbol(symbol):
         if x['symbol'] == symbol:
             return x['name']
 
+def inputMap(input):
+    """
+    INPUT:
+        Userinput
+    (examples: "Ethical Investing"
+    OUTPUT:
+        List of stock names
+    (Examples: ["AAPL","ADBE","NSRGY"]
+
+    input mapping:
+            "Ethical Investing"
+                -> Apple (AAPL)
+                -> Adobe (ADBE)
+                -> Nestle (NSRGY)
+            "Growth Investing"
+            "Index Investing"
+                -> Vanguard Total Stock Market ETF (VTI)
+                -> iShares Core MSCI Total Intl Stk (IXUS)
+                ->iShares Core 10+ Years USD Bond (ILTB)
+            "Quality Investing"
+            "Value Investing"
+    """
+    dict stockMap = {"Ethical Investing": ["AAPL", "ADBE", "NSRGY"],
+                     #TODO: fill out company names for "Growth Investing"
+                     "Growth Investing": ["<Company Name 1>", "<Company Name 2>", "<Company Name 3>"],
+                     "Index Investing": ["VTI", "IXUS", "ILTB"],
+                     #TODO: Fill out ocmpany names for "Quality Investing"
+                     "Quality Investing": ["<Company Name 1>", "<Company Name 2>", "<Company Name 3>"],
+                     #TODO: Fill out company names for "Value Investing"
+                     "Value Investing": ["<Company Name 1>", "<Company Name 2>", "<Company Name 3>"]
+                     }
+    return stockMap[input]
+
 #function to fetch stock data based on user input symbol
 def fetch_stock(request):
     stock_symbol = request.GET['tickerSymbol']
