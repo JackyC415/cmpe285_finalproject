@@ -18,15 +18,16 @@ def get_symbol(symbol):
             return x['name']
 
 
-def inputMap(input):
-    stockMap = {"Ethical Investing": ["AAPL", "ADBE", "NSRGY"],
-                "Growth Investing": ["FB", "NVDA", "CRM"],
-                "Index Investing": ["VTI", "IXUS", "ILTB"],
-                "Quality Investing": ["UTX", "NOW", "PYPL"],
-                "Value Investing": ["GD", "KMX", "VLO"]
-                }
+def input_map(input):
+    stockMap = {
+        "Ethical Investing": ["AAPL", "ADBE", "NSRGY"],
+        "Growth Investing": ["FB", "NVDA", "CRM"],
+        "Index Investing": ["VTI", "IXUS", "ILTB"],
+        "Quality Investing": ["UTX", "NOW", "PYPL"],
+        "Value Investing": ["GD", "KMX", "VLO"]
+    }
 
-    if(input in stockMap and input is not None):
+    if(input in stockMap and input != None):
         return stockMap[input]
 
 
@@ -34,10 +35,10 @@ def fetch_stock(request):
 
     # input maps to investment strategies -> ETFs/Stocks
     stock_symbol = request.GET['tickerSymbol']
-    strategy1 = request.GET['strategy1']
-    strategy2 = request.GET.get("strategy2", None)
-    print(inputMap(strategy1))
-    print(inputMap(strategy2))
+    strategy1Map = input_map(request.GET['strategy1'])
+    strategy2Map = input_map(request.GET.get('strategy2', None))
+    print(strategy1Map)
+    print(strategy2Map)
 
     # uses alphavantage stock api to fetch latest stock data in time series
     getStock = requests.get(
@@ -70,5 +71,7 @@ def fetch_stock(request):
         "stock_name": get_symbol(stock_symbol.upper()),
         "closingStockPriceToday": str(round(float(closingStockPriceToday), 2)),
         "valuesChange": valuesChange,
-        "percentageChange": percentageChange
+        "percentageChange": percentageChange,
+        "strategy1": request.GET['strategy1'], "strategy1Map": strategy1Map,
+        "strategy2": request.GET.get('strategy2', None), "strategy2Map": strategy2Map
     })
