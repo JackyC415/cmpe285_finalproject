@@ -54,8 +54,12 @@ def fetch_stock(request):
     print(strategy1Map)
     print(strategy2Map)
 
-    # iterate through first strategy map and call apis 3 times
+    # iterate through first strategy map and call stock api 3 times
     compute_stock(strategy1Map)
+
+    # since second investment strategy is optional, check for null
+    if(strategy2Map != None):
+        compute_stock(strategy2Map)
 
     #----------------------------------------------------------------------------------------------------------------------#
     # uses alphavantage stock api to fetch latest stock data in time series
