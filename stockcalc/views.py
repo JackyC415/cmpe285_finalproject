@@ -31,6 +31,20 @@ def input_map(input):
         return stockMap[input]
 
 
+def compute_stock(input):
+
+    for i in input:
+        strategy1MapStocks = requests.get(
+            'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + i + '&apikey=R2CDNLQSS8YOEHZU')
+        strategyStockData = strategy1MapStocks.json()['Time Series (Daily)']
+        currentClosing = strategyStockData[list(
+            strategyStockData)[0]]['4. close']
+        previousClosing = strategyStockData[list(
+            strategyStockData)[1]]['4. close']
+        print(i + "(current closing): $" + currentClosing)
+        print(i + "(previous closing): $" + previousClosing)
+
+
 def fetch_stock(request):
 
     # input maps to investment strategies -> ETFs/Stocks
@@ -40,20 +54,20 @@ def fetch_stock(request):
     print(strategy1Map)
     print(strategy2Map)
 
+    # iterate through first strategy map and call apis 3 times
+    compute_stock(strategy1Map)
+
+    #----------------------------------------------------------------------------------------------------------------------#
     # uses alphavantage stock api to fetch latest stock data in time series
     getStock = requests.get(
         'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + stock_symbol + '&apikey=R2CDNLQSS8YOEHZU')
 
     if (getStock.status_code == 200):
         # fetch stock data in JSON and then get current and previous closing data
-        stock = getStock.json()
-        stockData = stock['Time Series (Daily)']
-        dataForToday = stockData[list(stockData)[0]]
-        dataForYesterday = stockData[list(stockData)[1]]
-
+        stockData = getStock.json()['Time Series (Daily)']
         # compute differences between current & previous closing stock prices
-        closingStockPriceToday = dataForToday['4. close']
-        lastClosingStockPrice = dataForYesterday['4. close']
+        closingStockPriceToday = stockData[list(stockData)[0]]['4. close']
+        lastClosingStockPrice = stockData[list(stockData)[1]]['4. close']
         valuesChange = (float(closingStockPriceToday) -
                         float(lastClosingStockPrice))
         percentageChange = ((valuesChange/float(lastClosingStockPrice)) * 100)
