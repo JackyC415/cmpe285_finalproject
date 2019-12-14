@@ -14,7 +14,7 @@ def get_symbol(symbol):
         if x['symbol'] == symbol:
             return x['name']
 
-def inputMap(input):
+def inputMap(strategy1, strategy2):
     """
     INPUT:
         Userinput
@@ -22,7 +22,6 @@ def inputMap(input):
     OUTPUT:
         List of stock names
     (Examples: ["AAPL","ADBE","NSRGY"]
-
     input mapping:
             "Ethical Investing"
                 -> Apple (AAPL)
@@ -36,24 +35,31 @@ def inputMap(input):
             "Quality Investing"
             "Value Investing"
     """
-    dict stockMap = {"Ethical Investing": ["AAPL", "ADBE", "NSRGY"],
-                     #TODO: fill out company names for "Growth Investing"
-                     "Growth Investing": ["<Company Name 1>", "<Company Name 2>", "<Company Name 3>"],
+    stockMap = {"Ethical Investing": ["AAPL", "ADBE", "NSRGY"],
+                     "Growth Investing": ["FB", "NVDA", "CRM"],
                      "Index Investing": ["VTI", "IXUS", "ILTB"],
-                     #TODO: Fill out ocmpany names for "Quality Investing"
-                     "Quality Investing": ["<Company Name 1>", "<Company Name 2>", "<Company Name 3>"],
-                     #TODO: Fill out company names for "Value Investing"
-                     "Value Investing": ["<Company Name 1>", "<Company Name 2>", "<Company Name 3>"]
+                     "Quality Investing": ["UTX", "NOW", "PYPL"],
+                     "Value Investing": ["GD", "KMX", "VLO"]
                      }
-    return stockMap[input]
 
-#function to fetch stock data based on user input symbol
+    if(strategy1 in stockMap and strategy2 is not None):
+        print(stockMap[strategy1])
+        print(stockMap[strategy2])
+    else:
+        print(stockMap[strategy1])
+    #return stockMap[input]
+
 def fetch_stock(request):
+
+    #inputs map to investment strategies -> ETFs/Stocks
     stock_symbol = request.GET['tickerSymbol']
+    strategy1 = request.GET['strategy1']
+    strategy2 = request.GET.get("strategy2", None)
+    inputMap(strategy1, strategy2)
+
     #uses alphavantage stock api to fetch latest stock data in time series
     getStock = requests.get('https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + stock_symbol + '&apikey=R2CDNLQSS8YOEHZU')
 
-    #ensure response status is OK (in case of network issues)
     if (getStock.status_code == 200):
         #fetch stock data in JSON and then get current and previous closing data
         stock = getStock.json()
