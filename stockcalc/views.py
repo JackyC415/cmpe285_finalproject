@@ -34,9 +34,9 @@ def input_map(input):
 def compute_stock(input):
 
     for i in input:
-        strategy1MapStocks = requests.get(
+        strategyMapStocks = requests.get(
             'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + i + '&apikey=R2CDNLQSS8YOEHZU')
-        strategyStockData = strategy1MapStocks.json()['Time Series (Daily)']
+        strategyStockData = strategyMapStocks.json()['Time Series (Daily)']
         currentClosing = strategyStockData[list(
             strategyStockData)[0]]['4. close']
         previousClosing = strategyStockData[list(
