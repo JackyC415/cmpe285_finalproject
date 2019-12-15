@@ -92,14 +92,21 @@ def fetch_stock(request):
     strategy1Map = input_map(request.GET['strategy1'])
     strategy2Map = input_map(request.GET.get('strategy2', None))
 
-    # compute first investment strategy
-    stock_list, history_list = compute_stock(strategy1Map, investAmount)
+    invalidAmount = False
+    # ensure investment amount is greater than 5000
+    if(int(investAmount) < 5000):
+        invalidAmount = True
+        stock_list, history_list = '', ''
+    else:
+        # compute first investment strategy
+        stock_list, history_list = compute_stock(strategy1Map, investAmount)
+        # since second investment strategy is optional, check for null
+        if(strategy2Map != None):
+            compute_stock(strategy2Map, investAmount)
 
-    # since second investment strategy is optional, check for null
-    if(strategy2Map != None):
-        compute_stock(strategy2Map, investAmount)
-
+    print(type(request.GET.get('strategy2', None)))
     return render(request, "home.html", {
+        "invalidAmount": invalidAmount,
         "strategy1": request.GET['strategy1'], "strategy1Map": strategy1Map,
         "strategy2": request.GET.get('strategy2', None), "strategy2Map": strategy2Map,
         "stock_price": stock_list,
