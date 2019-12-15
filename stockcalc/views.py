@@ -33,16 +33,25 @@ def input_map(input):
 
 def compute_stock(input):
 
-    for i in input:
+    for stock_name in input:
         strategyMapStocks = requests.get(
-            'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + i + '&apikey=R2CDNLQSS8YOEHZU')
+            'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + stock_name + '&apikey=R2CDNLQSS8YOEHZU')
         strategyStockData = strategyMapStocks.json()['Time Series (Daily)']
+
+        # fetch previous 5 days history of stock data based on mapping
+        for stock_date in list(strategyStockData)[0:5]:
+            print(strategyStockData[stock_date])
+            print("Company {}, Date {}, Stock {} ".format(
+                stock_name, stock_date, strategyStockData[stock_date]))
+
+        """
         currentClosing = strategyStockData[list(
             strategyStockData)[0]]['4. close']
         previousClosing = strategyStockData[list(
             strategyStockData)[1]]['4. close']
         print(i + "(current closing): $" + currentClosing)
         print(i + "(previous closing): $" + previousClosing)
+        """
 
 
 def fetch_stock(request):
