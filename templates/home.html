@@ -1,14 +1,12 @@
 {% block content %}
 
 <h1>Stock Portfolio Suggestion Engine</h1>
-Course: Software Engineering Processes - CMPE 285. Fall, 2019. Professor Richard Sinn.<br>
 Team Name: Blitz<br>
 Team Members: Vikas Kodwani, Surendra Sharma, Jacky Zhihong Chen, Khang Doan<br>
-SJSU IDs:
+SJSU IDs: <br>
+Course: Software Engineering Processes - CMPE 285. Fall, 2019. Professor Richard Sinn.<br>
 
 <form action="fetch_stock">
-	<br><br>
-	Please enter a symbol: <input type="text" name="tickerSymbol" placeholder="ADBE" required>
 
 	<h3>Input dollar amount to invest in USD (Minimum is $5000 USD):</h3>
 	$<input type="text" name="investAmount" placeholder="5000" required>
@@ -39,11 +37,18 @@ SJSU IDs:
 	<input type="submit" value="Invest">
 </form>
 
-<h3>Output:</h3>
 <p>{{stock_date}}</p>
 <p>{{stock_name}}</p>
 <p>{{closingStockPriceToday}} {{valuesChange}} {{percentageChange}}</p>
-<p>{{strategy1}}: {{strategy1Map}}</p>
-<p>{{strategy2}}: {{strategy2Map}}</p>
+
+<h3>Investment Strategies:</h3>
+<p>{{strategy1}} {{strategy1Map}}</p>
+<p>{{strategy2}} {{strategy2Map}}</p>
+
+<h3>Stock(s) Price:</h3>
+<p>{{stock_price}}</p>
+
+<h3>Previous 5 days stock(s) history:</h3>
+<p>{{stock_history}}</p>
 
 {% endblock %}
