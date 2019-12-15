@@ -52,3 +52,6 @@ The suggestion engine will output:
 - How the money are divided to buy the suggested stock.
 - The current values (up to the sec via Internet) of the overall portfolio (including all the stocks / ETFs)
 - A weekly trend of the portfolio value. In order words, keep 5 days history of the overall portfolio value.
+
+### Tech Stack:
+Django, Python3, HTML5, Heroku, REST, Alphavantage Stock API
