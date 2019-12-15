@@ -31,10 +31,10 @@ def input_map(input):
         return stockMap[input]
 
 
-def compute_stock(input):
+def compute_stock(stocks, investment):
 
     stock_list, history_list = [], []
-    for stock_name in input:
+    for stock_name in stocks:
         # uses alphavantage stock api to fetch latest stock data in time series
         strategyMapStocks = requests.get(
             'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + stock_name + '&apikey=R2CDNLQSS8YOEHZU')
@@ -58,9 +58,15 @@ def compute_stock(input):
                 valuesChange = "+" + str(round(valuesChange, 2))
                 percentageChange = "(+" + \
                     str(round(percentageChange, 3)) + "%)"
-        
-        stock_list.append("Company: {} Date: {} Stock: {} {} {}".format(
-            get_symbol(stock_name), datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), currentClosing, valuesChange, percentageChange))
+
+        stock_list.append("Company: {} Date: {} Stock: {} {} {} Investment: {:.2f}".format(
+            get_symbol(stock_name),
+            datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            currentClosing,
+            valuesChange,
+            percentageChange,
+            (int(investment)/len(stocks))
+        ))
 
         # fetch previous 5 days history of stock data based on mapping
         for stock_date in list(strategyStockData)[0:5]:
@@ -73,15 +79,16 @@ def compute_stock(input):
 def fetch_stock(request):
 
     # input maps to investment strategies -> ETFs/Stocks
+    investAmount = request.GET['investAmount']
     strategy1Map = input_map(request.GET['strategy1'])
     strategy2Map = input_map(request.GET.get('strategy2', None))
 
     # compute first investment strategy
-    stock_list, history_list = compute_stock(strategy1Map)
+    stock_list, history_list = compute_stock(strategy1Map, investAmount)
 
     # since second investment strategy is optional, check for null
     if(strategy2Map != None):
-        compute_stock(strategy2Map)
+        compute_stock(strategy2Map, investAmount)
 
     return render(request, "home.html", {
         "strategy1": request.GET['strategy1'], "strategy1Map": strategy1Map,
