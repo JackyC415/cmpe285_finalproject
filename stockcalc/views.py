@@ -9,6 +9,8 @@ def home(request):
 
 
 def get_symbol(symbol):
+
+    # convert abbreviated stock symbol to actual company name
     url = "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query={}&region=1&lang=en".format(
         symbol)
     result = requests.get(url).json()
@@ -19,6 +21,8 @@ def get_symbol(symbol):
 
 
 def input_map(input):
+
+    # dictionary that maps investment strategies to stocks/etfs
     stockMap = {
         "Ethical Investing": ["AAPL", "ADBE", "NSRGY"],
         "Growth Investing": ["FB", "NVDA", "CRM"],
@@ -35,9 +39,9 @@ def compute_stock(stocks, investment):
 
     stock_list, history_list = [], []
     for stock_name in stocks:
-        # uses alphavantage stock api to fetch latest stock data in time series
+        # uses alphavantage stock API to fetch latest stock data in time series
         strategyMapStocks = requests.get(
-            'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + stock_name + '&apikey=R2CDNLQSS8YOEHZU')
+            'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol='+stock_name+'&apikey=R2CDNLQSS8YOEHZU')
 
         if (strategyMapStocks.status_code == 200):
             # fetch stock data in JSON and then get current and previous closing data
@@ -46,7 +50,7 @@ def compute_stock(stocks, investment):
                 strategyStockData)[0]]['4. close']
             previousClosing = strategyStockData[list(
                 strategyStockData)[1]]['4. close']
-            # compute differences between current & previous closing stock prices
+            # compute differences between current & previous closing stock prices to determine values change
             valuesChange = (float(currentClosing) - float(previousClosing))
             percentageChange = ((valuesChange/float(previousClosing)) * 100)
 
@@ -59,6 +63,7 @@ def compute_stock(stocks, investment):
                 percentageChange = "(+" + \
                     str(round(percentageChange, 3)) + "%)"
 
+        # store computed stock data in a list to return for rendering
         stock_list.append("Company: {} Date: {} Stock: {} {} {} Investment: {:.2f}".format(
             get_symbol(stock_name),
             datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -68,9 +73,9 @@ def compute_stock(stocks, investment):
             (int(investment)/len(stocks))
         ))
 
-        # fetch previous 5 days history of stock data based on mapping
+        # fetch previous 5 days of stock history for each stock
         for stock_date in list(strategyStockData)[0:5]:
-            history_list.append("Company: {} \t Date: {} Stock: {} ".format(
+            history_list.append("Company: {} Date: {} Stock: {} ".format(
                 get_symbol(stock_name), stock_date, strategyStockData[stock_date]))
 
     return stock_list, history_list
