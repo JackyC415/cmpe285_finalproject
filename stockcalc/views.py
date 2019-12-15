@@ -33,72 +33,59 @@ def input_map(input):
 
 def compute_stock(input):
 
+    stock_list, history_list = [], []
     for stock_name in input:
+        # uses alphavantage stock api to fetch latest stock data in time series
         strategyMapStocks = requests.get(
             'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + stock_name + '&apikey=R2CDNLQSS8YOEHZU')
-        strategyStockData = strategyMapStocks.json()['Time Series (Daily)']
+
+        if (strategyMapStocks.status_code == 200):
+            # fetch stock data in JSON and then get current and previous closing data
+            strategyStockData = strategyMapStocks.json()['Time Series (Daily)']
+            currentClosing = strategyStockData[list(
+                strategyStockData)[0]]['4. close']
+            previousClosing = strategyStockData[list(
+                strategyStockData)[1]]['4. close']
+            # compute differences between current & previous closing stock prices
+            valuesChange = (float(currentClosing) - float(previousClosing))
+            percentageChange = ((valuesChange/float(previousClosing)) * 100)
+
+            # display +/- based on stock value changes
+            if(valuesChange < 0):
+                valuesChange = round(valuesChange, 2)
+                percentageChange = "(" + str(round(percentageChange, 3)) + "%)"
+            else:
+                valuesChange = "+" + str(round(valuesChange, 2))
+                percentageChange = "(+" + \
+                    str(round(percentageChange, 3)) + "%)"
+        
+        stock_list.append("Company: {} Date: {} Stock: {} {} {}".format(
+            get_symbol(stock_name), datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), currentClosing, valuesChange, percentageChange))
 
         # fetch previous 5 days history of stock data based on mapping
         for stock_date in list(strategyStockData)[0:5]:
-            print(strategyStockData[stock_date])
-            print("Company {}, Date {}, Stock {} ".format(
-                stock_name, stock_date, strategyStockData[stock_date]))
+            history_list.append("Company: {} \t Date: {} Stock: {} ".format(
+                get_symbol(stock_name), stock_date, strategyStockData[stock_date]))
 
-        """
-        currentClosing = strategyStockData[list(
-            strategyStockData)[0]]['4. close']
-        previousClosing = strategyStockData[list(
-            strategyStockData)[1]]['4. close']
-        print(i + "(current closing): $" + currentClosing)
-        print(i + "(previous closing): $" + previousClosing)
-        """
+    return stock_list, history_list
 
 
 def fetch_stock(request):
 
     # input maps to investment strategies -> ETFs/Stocks
-    stock_symbol = request.GET['tickerSymbol']
     strategy1Map = input_map(request.GET['strategy1'])
     strategy2Map = input_map(request.GET.get('strategy2', None))
-    print(strategy1Map)
-    print(strategy2Map)
 
-    # iterate through first strategy map and call stock api 3 times
-    compute_stock(strategy1Map)
+    # compute first investment strategy
+    stock_list, history_list = compute_stock(strategy1Map)
 
     # since second investment strategy is optional, check for null
     if(strategy2Map != None):
         compute_stock(strategy2Map)
 
-    #----------------------------------------------------------------------------------------------------------------------#
-    # uses alphavantage stock api to fetch latest stock data in time series
-    getStock = requests.get(
-        'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + stock_symbol + '&apikey=R2CDNLQSS8YOEHZU')
-
-    if (getStock.status_code == 200):
-        # fetch stock data in JSON and then get current and previous closing data
-        stockData = getStock.json()['Time Series (Daily)']
-        # compute differences between current & previous closing stock prices
-        closingStockPriceToday = stockData[list(stockData)[0]]['4. close']
-        lastClosingStockPrice = stockData[list(stockData)[1]]['4. close']
-        valuesChange = (float(closingStockPriceToday) -
-                        float(lastClosingStockPrice))
-        percentageChange = ((valuesChange/float(lastClosingStockPrice)) * 100)
-
-        # display +/- based on stock value changes
-        if(valuesChange < 0):
-            valuesChange = round(valuesChange, 2)
-            percentageChange = "(" + str(round(percentageChange, 3)) + "%)"
-        else:
-            valuesChange = "+" + str(round(valuesChange, 2))
-            percentageChange = "(+" + str(round(percentageChange, 3)) + "%)"
-
     return render(request, "home.html", {
-        "stock_date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "stock_name": get_symbol(stock_symbol.upper()),
-        "closingStockPriceToday": str(round(float(closingStockPriceToday), 2)),
-        "valuesChange": valuesChange,
-        "percentageChange": percentageChange,
         "strategy1": request.GET['strategy1'], "strategy1Map": strategy1Map,
-        "strategy2": request.GET.get('strategy2', None), "strategy2Map": strategy2Map
+        "strategy2": request.GET.get('strategy2', None), "strategy2Map": strategy2Map,
+        "stock_price": stock_list,
+        "stock_history": history_list
     })
