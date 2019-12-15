@@ -4,20 +4,19 @@
 Course: Software Engineering Processes - CMPE 285. Fall, 2019. Professor Richard Sinn.<br>
 Team Name: Blitz<br>
 Team Members: Vikas Kodwani, Surendra Sharma, Jacky Zhihong Chen, Khang Doan<br>
+SJSU IDs:
 
 <form action="fetch_stock">
-	<h3>Input:</h3>
-	Please enter a symbol:
-	<input type="text" name="tickerSymbol" placeholder="ADBE" required>
 	<br><br>
+	Please enter a symbol: <input type="text" name="tickerSymbol" placeholder="ADBE" required>
 
-	Input dollar amount to invest in USD (Minimum is $5000 USD):
+	<h3>Input dollar amount to invest in USD (Minimum is $5000 USD):</h3>
 	$<input type="text" name="investAmount" placeholder="5000" required>
 
-	<h3>Pick one or two investment strategies</h3>
+	<h3>Pick one or two investment strategies:</h3>
 
-	Investment Strategy 1:
-	<select name="strategy1" size="3" required>
+	First Investment Strategy:
+	<select name="strategy1" size="1" required>
 		<option value="Ethical Investing">Ethical Investing</option>
 		<option value="Growth Investing">Growth Investing</option>
 		<option value="Index Investing">Index Investing</option>
@@ -26,8 +25,9 @@ Team Members: Vikas Kodwani, Surendra Sharma, Jacky Zhihong Chen, Khang Doan<br>
 	</select>
 	<br><br>
 
-	Investment Strategy 2:
-	<select name="strategy2" size="3">
+	Second Investment Strategy (Optional):
+	<select name="strategy2" size="1">
+		<option>None</option>
 		<option value="Ethical Investing">Ethical Investing</option>
 		<option value="Growth Investing">Growth Investing</option>
 		<option value="Index Investing">Index Investing</option>
@@ -36,7 +36,7 @@ Team Members: Vikas Kodwani, Surendra Sharma, Jacky Zhihong Chen, Khang Doan<br>
 	</select>
 	<br><br>
 
-	<input type="submit">
+	<input type="submit" value="Invest">
 </form>
 
 <h3>Output:</h3>
