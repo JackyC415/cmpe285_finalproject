@@ -53,6 +53,7 @@ def compute_stock(stocks, investment):
             # compute differences between current & previous closing stock prices to determine values change
             valuesChange = (float(currentClosing) - float(previousClosing))
             percentageChange = ((valuesChange/float(previousClosing)) * 100)
+            closingDate = list(strategyStockData)[0]
 
             # display +/- based on stock value changes
             if(valuesChange < 0):
@@ -64,9 +65,9 @@ def compute_stock(stocks, investment):
                     str(round(percentageChange, 3)) + "%)"
 
         # store computed stock data in a list to return for rendering
-        stock_list.append("Company: {} Date: {} Stock: {} {} {} Investment: {:.2f}".format(
+        stock_list.append("Company: {} Closing Date: {} Stock: {} {} {} Investment: {:.2f}".format(
             get_symbol(stock_name),
-            datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            closingDate,
             currentClosing,
             valuesChange,
             percentageChange,
@@ -75,8 +76,11 @@ def compute_stock(stocks, investment):
 
         # fetch previous 5 days of stock history for each stock
         for stock_date in list(strategyStockData)[0:5]:
-            history_list.append("Company: {} Date: {} Stock: {} ".format(
-                get_symbol(stock_name), stock_date, strategyStockData[stock_date]))
+            history_list.append("Company: {} Closing Date: {} Stock: {} ".format(
+                get_symbol(stock_name),
+                stock_date,
+                strategyStockData[stock_date]
+            ))
 
     return stock_list, history_list
 
