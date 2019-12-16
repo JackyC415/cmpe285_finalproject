@@ -134,9 +134,13 @@ Course: Software Engineering Processes - CMPE 285. Fall, 2019. Professor Richard
 <h3>Investment Strategies:</h3>
 <p>{{strategy1}} {{strategy1Map}}</p>
 <h3>Stock(s) Price:</h3>
-<p>{{stock_price}}</p>
+{% for stocks in stock_list %}
+<p>{{ stocks }}</p>
+{% endfor %}
 <h3>Previous 5 days stock(s) history:</h3>
-<p>{{stock_history}}</p>
+{% for stocks in stock_history %}
+<p>{{ stocks }}</p>
+{% endfor %}
 {% endif %}
 
 https://canvasjs.com/javascript-charts/multi-series-candlestick-chart/
