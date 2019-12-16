@@ -41,14 +41,6 @@ Course: Software Engineering Processes - CMPE 285. Fall, 2019. Professor Richard
 <p>{{strategy1}}: {{strategy1Map}}</p>
 <p>{{strategy2}}: {{strategy2Map}}</p>
 <h3>Stock(s) Data:</h3>
-<p>{{stock_price}}</p>
-<h3>Previous 5 Days of Stock(s) History:</h3>
-<p>{{stock_history}}</p>
-
-{% elif strategy1 %}
-<h3>Investment Strategies:</h3>
-<p>{{strategy1}}: {{strategy1Map}}</p>
-<h3>Stock(s) Data:</h3>
 {% for stocks in stock_list %}
 <p>{{ stocks }}</p>
 {% endfor %}
@@ -56,7 +48,24 @@ Course: Software Engineering Processes - CMPE 285. Fall, 2019. Professor Richard
 {% for stocks in stock_history %}
 <p>{{ stocks }}</p>
 {% endfor %}
+<h3> Stock(s) History Graphical Plot Over Multiple Months (Extra feature)</h3>
 {% for i in images %}
+<img src="data:image/png;base64,{{ i|safe }}" width="500px">
+{% endfor %}
+
+{% elif strategy1 %}
+<h3>Investment Strategies:</h3>
+<p>{{strategy1}}: {{strategy1Map}}</p>
+<h3>Stock(s) Data:</h3>
+{% for stocks in stock_list2 %}
+<p>{{ stocks }}</p>
+{% endfor %}
+<h3>Previous 5 Days of Stock(s) History:</h3>
+{% for stocks in stock_history2 %}
+<p>{{ stocks }}</p>
+{% endfor %}
+<h3>Stock(s) History Graphical Plot Over Multiple Months (Extra feature)</h3>
+{% for i in images2 %}
 <img src="data:image/png;base64,{{ i|safe }}" width="500px">
 {% endfor %}
 
