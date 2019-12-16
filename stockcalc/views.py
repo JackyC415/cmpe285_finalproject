@@ -65,7 +65,7 @@ def compute_stock(stocks, investment):
                     str(round(percentageChange, 3)) + "%)"
 
         # store computed stock data in a list to return for rendering
-        stock_list.append("Company: {} Closing Date: {} Stock: {} {} {} Investment: {:.2f}".format(
+        stock_list.append("Company: {} Closing Date: {} Stock: {} {} {} Investment: ${:.2f}".format(
             get_symbol(stock_name),
             closingDate,
             currentClosing,
@@ -92,11 +92,9 @@ def fetch_stock(request):
     strategy1Map = input_map(request.GET['strategy1'])
     strategy2Map = input_map(request.GET.get('strategy2', None))
 
-    invalidAmount = False
     # ensure investment amount is greater than 5000
     if(int(investAmount) < 5000):
-        invalidAmount = True
-        stock_list, history_list = '', ''
+        print('Minimum investment is $5000')
     else:
         # compute first investment strategy
         stock_list, history_list = compute_stock(strategy1Map, investAmount)
@@ -106,7 +104,6 @@ def fetch_stock(request):
 
     print(type(request.GET.get('strategy2', None)))
     return render(request, "home.html", {
-        "invalidAmount": invalidAmount,
         "strategy1": request.GET['strategy1'], "strategy1Map": strategy1Map,
         "strategy2": request.GET.get('strategy2', None), "strategy2Map": strategy2Map,
         "stock_list": stock_list,
