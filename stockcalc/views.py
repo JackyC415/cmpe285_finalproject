@@ -109,6 +109,6 @@ def fetch_stock(request):
         "invalidAmount": invalidAmount,
         "strategy1": request.GET['strategy1'], "strategy1Map": strategy1Map,
         "strategy2": request.GET.get('strategy2', None), "strategy2Map": strategy2Map,
-        "stock_price": stock_list,
+        "stock_list": stock_list,
         "stock_history": history_list
     })
