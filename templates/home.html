@@ -9,7 +9,7 @@ Course: Software Engineering Processes - CMPE 285. Fall, 2019. Professor Richard
 <form action="fetch_stock">
 
 	<h3>Input dollar amount to invest in USD (Minimum is $5000 USD):</h3>
-	$<input type="number" name="investAmount" placeholder="5000" required>
+	$<input type="number" name="investAmount" placeholder="5000" min="5000" required>
 
 	<h3>Pick one or two investment strategies:</h3>
 
@@ -118,29 +118,27 @@ Course: Software Engineering Processes - CMPE 285. Fall, 2019. Professor Richard
 	}
 </script>
 
-{% if invalidAmount %}
-<script>
-	alert('Please select a valid investment amount!');
-</script>
-{% elif strategy1 and strategy2 != 'None' %}
+{% if strategy1 and strategy2 != 'None' %}
 <h3>Investment Strategies:</h3>
-<p>{{strategy1}} {{strategy1Map}}</p>
-<p>{{strategy2}} {{strategy2Map}}</p>
-<h3>Stock(s) Price:</h3>
+<p>{{strategy1}}: {{strategy1Map}}</p>
+<p>{{strategy2}}: {{strategy2Map}}</p>
+<h3>Stock(s) Data:</h3>
 <p>{{stock_price}}</p>
-<h3>Previous 5 days stock(s) history:</h3>
+<h3>Previous 5 Days of Stock(s) History:</h3>
 <p>{{stock_history}}</p>
+
 {% elif strategy1 %}
 <h3>Investment Strategies:</h3>
-<p>{{strategy1}} {{strategy1Map}}</p>
-<h3>Stock(s) Price:</h3>
+<p>{{strategy1}}: {{strategy1Map}}</p>
+<h3>Stock(s) Data:</h3>
 {% for stocks in stock_list %}
 <p>{{ stocks }}</p>
 {% endfor %}
-<h3>Previous 5 days stock(s) history:</h3>
+<h3>Previous 5 Days of Stock(s) History:</h3>
 {% for stocks in stock_history %}
 <p>{{ stocks }}</p>
 {% endfor %}
+
 {% endif %}
 
 https://canvasjs.com/javascript-charts/multi-series-candlestick-chart/
