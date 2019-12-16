@@ -41,7 +41,7 @@ def compute_stock(stocks, investment):
     for stock_name in stocks:
         # uses alphavantage stock API to fetch latest stock data in time series
         strategyMapStocks = requests.get(
-            'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol='+stock_name+'&apikey=R2CDNLQSS8YOEHZU')
+            'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol='+stock_name+'&apikey=WW1TTWRBNMVWNH9G')
         imagelist.append(showChart(strategyMapStocks.json()))
 
         if (strategyMapStocks.status_code == 200):
