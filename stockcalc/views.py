@@ -136,14 +136,12 @@ def fetch_stock(request):
     # ensure investment amount is greater than 5000
     if(int(investAmount) < 5000):
         print('Minimum investment is $5000')
+    elif(strategy1Map and strategy2Map != None):
+         stock_list, history_list, imagelist = compute_stock(
+            strategy1Map+strategy2Map, investAmount)
     else:
-        # compute first investment strategy
-        stock_list, history_list, imagelist = compute_stock(
+        stock_list2, history_list2, imagelist2 = compute_stock(
             strategy1Map, investAmount)
-        # since second investment strategy is optional, check for null
-        if(strategy2Map != None):
-            stock_list2, history_list2, imagelist2 = compute_stock(
-                strategy2Map, investAmount)
 
     print(type(request.GET.get('strategy2', None)))
     return render(request, "home.html", {
