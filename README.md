@@ -1,14 +1,17 @@
 # Stock Portfolio Suggestion Engine
 
+# App Deployment Url: 
+https://cmpe285teamblitzfinalproject.herokuapp.com/
+
 # Pre-req: 
-Make sure to install python3, django and virtual env.
+Make sure to install python3, set up Django environment with virtual env and install all the requirement dependencies listed in requirements.txt
 
 # Instructions to run: 
 git clone https://github.com/JackyC415/stock-portfolio-suggestion-engine-djangoapp.git && cd stock-portfolio-suggestion-engine-djangoapp && python3 manage.py runserver
 
 # Step by Step (MacOS):
 1) git clone https://github.com/JackyC415/stock-portfolio-suggestion-engine-djangoapp.git (clone repository)
-2) cd cmpe285_finalproject (enter cloned directory)
+2) cd stock-portfolio-suggestion-engine-djangoapp (enter cloned directory)
 3) python3 manage.py runserver (launch server locally)
 4) open browser -> http://localhost:8000
 
@@ -54,4 +57,4 @@ The suggestion engine will output:
 - A weekly trend of the portfolio value. In order words, keep 5 days history of the overall portfolio value.
 
 ### Tech Stack:
-Django, Python3, HTML5, Heroku, REST, Alphavantage Stock API
+Django, Python3, HTML5/CSS3/JS, Heroku, REST, Alphavantage Stock API
