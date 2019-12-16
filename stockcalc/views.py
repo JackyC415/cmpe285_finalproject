@@ -139,9 +139,15 @@ def fetch_stock(request):
     elif(strategy1Map and strategy2Map != None):
          stock_list, history_list, imagelist = compute_stock(
             strategy1Map+strategy2Map, investAmount)
+         stock_list2 = ''
+         history_list2 = ''
+         imagelist2 = ''
     else:
         stock_list2, history_list2, imagelist2 = compute_stock(
             strategy1Map, investAmount)
+        stock_list = ''
+        history_list = ''
+        imagelist = ''
 
     print(type(request.GET.get('strategy2', None)))
     return render(request, "home.html", {
