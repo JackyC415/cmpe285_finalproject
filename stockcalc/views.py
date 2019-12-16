@@ -37,11 +37,12 @@ def input_map(input):
 
 def compute_stock(stocks, investment):
 
-    stock_list, history_list = [], []
+    stock_list, history_list, imagelist = [], [], []
     for stock_name in stocks:
         # uses alphavantage stock API to fetch latest stock data in time series
         strategyMapStocks = requests.get(
             'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol='+stock_name+'&apikey=R2CDNLQSS8YOEHZU')
+        imagelist.append(showChart(strategyMapStocks.json()))
 
         if (strategyMapStocks.status_code == 200):
             # fetch stock data in JSON and then get current and previous closing data
@@ -82,7 +83,7 @@ def compute_stock(stocks, investment):
                 strategyStockData[stock_date]
             ))
 
-    return stock_list, history_list
+    return stock_list, history_list, imagelist
 
 
 def fetch_stock(request):
@@ -97,7 +98,7 @@ def fetch_stock(request):
         print('Minimum investment is $5000')
     else:
         # compute first investment strategy
-        stock_list, history_list = compute_stock(strategy1Map, investAmount)
+        stock_list, history_list, imagelist  = compute_stock(strategy1Map, investAmount)
         # since second investment strategy is optional, check for null
         if(strategy2Map != None):
             compute_stock(strategy2Map, investAmount)
@@ -107,5 +108,50 @@ def fetch_stock(request):
         "strategy1": request.GET['strategy1'], "strategy1Map": strategy1Map,
         "strategy2": request.GET.get('strategy2', None), "strategy2Map": strategy2Map,
         "stock_list": stock_list,
-        "stock_history": history_list
+        "stock_history": history_list,
+        'images': imagelist
     })
+
+
+def showChart(json):
+    import pandas
+    import matplotlib.pyplot as plt
+    from mpl_finance import candlestick_ohlc
+    import matplotlib.dates as mdates
+    import io
+    import base64
+    stockJSON = json
+    df = pandas.DataFrame()
+    df['Date'] = list(stockJSON['Time Series (Daily)'].keys())
+    df['Date'] = pandas.to_datetime(df['Date'])
+    df['Date'] = df['Date'].map(mdates.date2num)
+    open = []
+    close = []
+    high = []
+    low = []
+    dataList = list(stockJSON['Time Series (Daily)'].values())
+    for i in range(len(dataList)):
+        open.append(float(dataList[i]['1. open']))
+        high.append(float(dataList[i]['2. high']))
+        low.append(float(dataList[i]['3. low']))
+        close.append(float(dataList[i]['4. close']))
+    df['open'] = open
+    df['high'] = high
+    df['low'] = low
+    df['close'] = close
+    ax = plt.subplot()
+    candlestick_ohlc(ax, df.values, width=1, colorup='g', colordown='r')
+    ax.xaxis_date()
+    date_format = mdates.DateFormatter('%Y-%m-%d')
+    ax.xaxis.set_major_formatter(date_format)
+    ax.grid(True)
+    ax.set_title(stockJSON['Meta Data']['2. Symbol'], color='black')
+    figureBuffer = io.BytesIO()
+    plt.savefig(figureBuffer, dpi=100,format='png')
+    image_png = figureBuffer.getvalue()
+    figureBuffer.close()
+    plt.close()
+    graphic = base64.b64encode(image_png)
+    graphic = graphic.decode('utf-8')
+    return graphic
+
