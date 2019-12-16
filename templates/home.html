@@ -138,6 +138,9 @@ Course: Software Engineering Processes - CMPE 285. Fall, 2019. Professor Richard
 {% for stocks in stock_history %}
 <p>{{ stocks }}</p>
 {% endfor %}
+{% for i in images %}
+	<img src="data:image/png;base64,{{ i|safe }}" width="500px">
+{% endfor %}
 
 {% endif %}
 
