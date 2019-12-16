@@ -2,6 +2,12 @@ import requests
 import datetime
 from django.shortcuts import render
 from django.http import HttpResponse
+import pandas
+import matplotlib.pyplot as plt
+from mpl_finance import candlestick_ohlc
+import matplotlib.dates as mdates
+import io
+import base64
 
 
 def home(request):
@@ -41,7 +47,7 @@ def compute_stock(stocks, investment):
     for stock_name in stocks:
         # uses alphavantage stock API to fetch latest stock data in time series
         strategyMapStocks = requests.get(
-            'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol='+stock_name+'&apikey=R2CDNLQSS8YOEHZU')
+            'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol='+stock_name+'&apikey=WW1TTWRBNMVWNH9G')
         imagelist.append(showChart(strategyMapStocks.json()))
 
         if (strategyMapStocks.status_code == 200):
@@ -86,49 +92,13 @@ def compute_stock(stocks, investment):
     return stock_list, history_list, imagelist
 
 
-def fetch_stock(request):
-
-    # input maps to investment strategies -> ETFs/Stocks
-    investAmount = request.GET['investAmount']
-    strategy1Map = input_map(request.GET['strategy1'])
-    strategy2Map = input_map(request.GET.get('strategy2', None))
-
-    # ensure investment amount is greater than 5000
-    if(int(investAmount) < 5000):
-        print('Minimum investment is $5000')
-    else:
-        # compute first investment strategy
-        stock_list, history_list, imagelist  = compute_stock(strategy1Map, investAmount)
-        # since second investment strategy is optional, check for null
-        if(strategy2Map != None):
-            compute_stock(strategy2Map, investAmount)
-
-    print(type(request.GET.get('strategy2', None)))
-    return render(request, "home.html", {
-        "strategy1": request.GET['strategy1'], "strategy1Map": strategy1Map,
-        "strategy2": request.GET.get('strategy2', None), "strategy2Map": strategy2Map,
-        "stock_list": stock_list,
-        "stock_history": history_list,
-        'images': imagelist
-    })
-
-
 def showChart(json):
-    import pandas
-    import matplotlib.pyplot as plt
-    from mpl_finance import candlestick_ohlc
-    import matplotlib.dates as mdates
-    import io
-    import base64
     stockJSON = json
     df = pandas.DataFrame()
     df['Date'] = list(stockJSON['Time Series (Daily)'].keys())
     df['Date'] = pandas.to_datetime(df['Date'])
     df['Date'] = df['Date'].map(mdates.date2num)
-    open = []
-    close = []
-    high = []
-    low = []
+    open, close, high, low = [], [], [], []
     dataList = list(stockJSON['Time Series (Daily)'].values())
     for i in range(len(dataList)):
         open.append(float(dataList[i]['1. open']))
@@ -147,7 +117,7 @@ def showChart(json):
     ax.grid(True)
     ax.set_title(stockJSON['Meta Data']['2. Symbol'], color='black')
     figureBuffer = io.BytesIO()
-    plt.savefig(figureBuffer, dpi=100,format='png')
+    plt.savefig(figureBuffer, dpi=100, format='png')
     image_png = figureBuffer.getvalue()
     figureBuffer.close()
     plt.close()
@@ -155,3 +125,31 @@ def showChart(json):
     graphic = graphic.decode('utf-8')
     return graphic
 
+
+def fetch_stock(request):
+
+    # input maps to investment strategies -> ETFs/Stocks
+    investAmount = request.GET['investAmount']
+    strategy1Map = input_map(request.GET['strategy1'])
+    strategy2Map = input_map(request.GET.get('strategy2', None))
+
+    # ensure investment amount is greater than 5000
+    if(int(investAmount) < 5000):
+        print('Minimum investment is $5000')
+    else:
+        # compute first investment strategy
+        stock_list, history_list, imagelist = compute_stock(
+            strategy1Map, investAmount)
+        # since second investment strategy is optional, check for null
+        if(strategy2Map != None):
+            stock_list2, history_list2, imagelist2 = compute_stock(
+                strategy2Map, investAmount)
+
+    print(type(request.GET.get('strategy2', None)))
+    return render(request, "home.html", {
+        "strategy1": request.GET['strategy1'], "strategy1Map": strategy1Map,
+        "strategy2": request.GET.get('strategy2', None), "strategy2Map": strategy2Map,
+        "stock_list": stock_list, "stock_list2": stock_list2,
+        "stock_history": history_list, "stock_history2": history_list2,
+        'images': imagelist, 'images2': imagelist2
+    })
